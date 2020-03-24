@@ -59,7 +59,7 @@ exports.onHighscoreChange = functions.database.ref('/hackpoints/{hackId}/PlayerH
 		const afterValue = change.after.exists() ? change.after.val() : 0;
 		const userId = change.after.key;
 
-		const teamIndexRef = context.ref("team_index").child(userId);
+		const teamIndexRef = db.ref("team_index").child(userId);
 		const teamIndex = teamIndexRef.exists() ? teamIndexRef.val() : 0;
 		
 		const hackpointTeamScoreRef = change.parent.parent.child("TeamHighscores").child(teamIndex);
