@@ -39,11 +39,31 @@ exports.updateDatabase = functions.https.onRequest((request, response) => {
 
                 	});
 
-			// Legg til endring av hackpointane sine posisjonar og
+			var maxMinigames = snapshot.val().minigame_amount;
+
 			hackpointRef.once("value", function(snapshot) {
         			snapshot.forEach(function(data) {
                 			hackpointRef.child(data.key).child("PlayerHighscores").set({});
         			});
+
+				var currentHackpoint = data.val();
+
+				var meanLat = currentHackpoint.Distribution.Mean.lat;
+				var meanLng = currentHackpoint.Distribution.Mean.lng;
+				var variance = currentHackpoint.Distribution.Variance;
+				var newLat = Math.random()*variance + meanLat-(variance/2);
+				var newLng = Math.random()*variance + meanLng-(variance/2);
+
+				hackpointRef.child(data.key).child("Position").update({
+					'lat': newLat,
+					'lng': newLng
+				});
+
+				var newMinigame = Math.floor(Math.random()*maxMinigames);
+
+				hackpointRef.child(data.key).update({
+					'minigame_index': newMinigame
+				});
 
 			});	
 
