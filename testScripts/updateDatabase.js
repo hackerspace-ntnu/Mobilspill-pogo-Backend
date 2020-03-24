@@ -33,13 +33,27 @@ teamRef.once("value", function(snapshot) {
 
 		});
 
-		// Legg til endring av hackpointane sine posisjonar og
 		hackpointRef.once("value", function(snapshot) {
 			snapshot.forEach(function(data) {
 				hackpointRef.child(data.key).child("PlayerHighscores").set({});
+
+				var currentHackpoint = snapshot.child(data.key).val();
+
+				var meanLat = currentHackpoint.Distribution.Mean.lat;
+				var meanLng = currentHackpoint.Distribution.Mean.lng;
+				var variance = currentHackpoint.Distribution.Variance;
+				var newLat = Math.random()*variance + meanLat-(variance/2);
+				var newLng = Math.random()*variance + meanLng-(variance/2);
+
+				hackpointRef.child(data.key).child("Position").update({
+					'lat': newLat,
+					'lng': newLng
+				});
+
 			});
 
 		});
+
 	};
 
 });
