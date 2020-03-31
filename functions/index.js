@@ -21,7 +21,7 @@ exports.updateDatabase = functions.https.onRequest((request, response) => {
 	const currentDate = new Date();
 
 	teamRef.once("value", function(snapshot) {
-        	databaseDate = snapshot.val().Date;
+        	const databaseDate = snapshot.val().date;
 
 	        if (currentDate.getDate() != databaseDate) { // Hugs å skifta tilbake!!
         	        const totalTeams = snapshot.numChildren()-3;
@@ -34,9 +34,8 @@ exports.updateDatabase = functions.https.onRequest((request, response) => {
                 	};
 
                 	teamRef.update({
-                        	'Date' : currentDate.getDate(),
+                        	'date' : currentDate.getDate(),
                         	'current_index' : currentIndex
-
                 	});
 
 			const maxMinigames = snapshot.val().minigame_amount;
@@ -47,13 +46,13 @@ exports.updateDatabase = functions.https.onRequest((request, response) => {
 
 					const currentHackpoint = data.val();
 
-					const meanLat = currentHackpoint.Distribution.Mean.lat;
-					const meanLng = currentHackpoint.Distribution.Mean.lng;
-					const variance = currentHackpoint.Distribution.Variance;
+					const meanLat = currentHackpoint.distribution.mean.lat;
+					const meanLng = currentHackpoint.distribution.mean.lng;
+					const variance = currentHackpoint.distribution.variance;
 					const newLat = Math.random()*variance + meanLat-(variance/2);
 					const newLng = Math.random()*variance + meanLng-(variance/2);
 
-					hackpointRef.child(data.key).child("Position").update({
+					hackpointRef.child(data.key).child("position").update({
 						'lat': newLat,
 						'lng': newLng
 					});
@@ -63,6 +62,7 @@ exports.updateDatabase = functions.https.onRequest((request, response) => {
 					hackpointRef.child(data.key).update({
 						'minigame_index': newMinigame
 					});
+
 				});
 
 			});
