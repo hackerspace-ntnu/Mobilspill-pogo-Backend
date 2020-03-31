@@ -1,24 +1,25 @@
-var admin = require("firebase-admin");
+const admin = require("firebase-admin");
 
-var serviceAccount = require("../../pogo-key.json");
+const serviceAccount = require("../../pogo-key.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://pogo-65145.firebaseio.com"
 });
 
-var db = admin.database();
+const db = admin.database();
 
-var teamRef = db.ref("team_comps");
-var hackpointRef = db.ref("hackpoints");
+const teamRef = db.ref("team_comps");
+const hackpointRef = db.ref("hackpoints");
 
-var currentDate = new Date();
+const currentDate = new Date();
 
 teamRef.once("value", function(snapshot) {
 	databaseDate = snapshot.val().Date;
 	
 	if (currentDate.getDate() == databaseDate) { // Hugs å skifta tilbake!!
-		var totalTeams = snapshot.numChildren()-4;
+
+		const totalTeams = snapshot.numChildren()-4;	
 		var currentIndex = snapshot.val().current_index;
 		
 		if (currentIndex < totalTeams) {
@@ -33,7 +34,7 @@ teamRef.once("value", function(snapshot) {
 
 		});
 		
-		var maxMinigames = snapshot.val().minigame_amount;
+		const maxMinigames = snapshot.val().minigame_amount;
 /* 
 		// Vil implementera at kvart hacpoint har forskjellig minigame, 
 		// men då treng me fleire minigames og hackpoints
@@ -50,20 +51,20 @@ teamRef.once("value", function(snapshot) {
 			snap.forEach(function(data) {
 				hackpointRef.child(data.key).child("PlayerHighscores").set({});
 
-				var currentHackpoint = data.val();
+				const currentHackpoint = data.val();
 
-				var meanLat = currentHackpoint.Distribution.Mean.lat;
-				var meanLng = currentHackpoint.Distribution.Mean.lng;
-				var variance = currentHackpoint.Distribution.Variance;
-				var newLat = Math.random()*variance + meanLat-(variance/2);
-				var newLng = Math.random()*variance + meanLng-(variance/2);
+				const meanLat = currentHackpoint.Distribution.Mean.lat;
+				const meanLng = currentHackpoint.Distribution.Mean.lng;
+				const variance = currentHackpoint.Distribution.Variance;
+				const newLat = Math.random()*variance + meanLat-(variance/2);
+				const newLng = Math.random()*variance + meanLng-(variance/2);
 
 				hackpointRef.child(data.key).child("Position").update({
 					'lat': newLat,
 					'lng': newLng
 				});
 
-				var newMinigame = Math.floor(Math.random()*maxMinigames);
+				const newMinigame = Math.floor(Math.random()*maxMinigames);
 
 				hackpointRef.child(data.key).update({
 					'minigame_index': newMinigame
