@@ -38,7 +38,7 @@ teamCompsRef.once("value", function(snapshot) {
 
 		hackpointRef.once("value", function(snap) {
 			snap.forEach(function(data) {
-				hackpointRef.child(data.key).child("PlayerHighscores").set({});
+				hackpointRef.child(data.key).child("player_highscores").set({});
 
 				const currentHackpoint = data.val();
 
