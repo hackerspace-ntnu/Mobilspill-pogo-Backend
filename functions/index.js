@@ -72,3 +72,20 @@ exports.updateDatabase = functions.https.onRequest((request, response) => {
 	});
 	response.send("Complete!")
 });
+
+exports.onHighscoreChange = functions.database.ref('/hackpoints/{hackId}/PlayerHighscores/{userId}/')
+    .onWrite((change, context) => {
+		const beforeValue = change.before.exists() ? change.before.val() : 0;
+		const afterValue = change.after.exists() ? change.after.val() : 0;
+		const userId = change.after.key;
+
+		const teamIndexRef = db.ref("team_index").child(userId);
+		const teamIndex = teamIndexRef.exists() ? teamIndexRef.val() : 0;
+		
+		const hackpointTeamScoreRef = change.parent.parent.child("TeamHighscores").child(teamIndex);
+		const previousTotalScore = hackpointTeamScoreRef.exists() ? hackpointTeamScoreRef.val() : 0;
+		const newScore = previousTotalScore + beforeValue - afterValue;
+
+		return hackpointTeamScoreRef.set(newScore);
+});
+
