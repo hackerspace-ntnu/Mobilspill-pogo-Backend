@@ -9,12 +9,13 @@ admin.initializeApp({
 
 const db = admin.database();
 
-const teamRef = db.ref("team_comps");
+const teamCompsRef = db.ref("team_comps");
+const teamHighscoresRef = db.ref("team_highscores");
 const hackpointRef = db.ref("hackpoints");
 
 const currentDate = new Date();
 
-teamRef.once("value", function(snapshot) {
+teamCompsRef.once("value", function(snapshot) {
 	const databaseDate = snapshot.val().date;
 	
 	if (currentDate.getDate() == databaseDate) { // Hugs å skifta tilbake!!
@@ -28,24 +29,13 @@ teamRef.once("value", function(snapshot) {
 			currentIndex = 0;
 		};
 		
-		teamRef.update({
+		teamCompsRef.update({
 			'date' : currentDate.getDate(),
 			'current_index' : currentIndex
 		});
 		
 		const maxMinigames = snapshot.val().minigame_amount;
-/* 
-		// Vil implementera at kvart hacpoint har forskjellig minigame, 
-		// men då treng me fleire minigames og hackpoints
-		
-		var minigameList = [];
-		
-		for (let x = 0; x < maxMinigames; x++){
-			minigameList.push(x)
-		};
 
-		console.table(minigameList);
-*/		
 		hackpointRef.once("value", function(snap) {
 			snap.forEach(function(data) {
 				hackpointRef.child(data.key).child("PlayerHighscores").set({});
@@ -71,6 +61,15 @@ teamRef.once("value", function(snapshot) {
 
 			});
 
+		});
+
+		teamHighscoresRef.once("value", function(poop) {
+			teamHighscoresRef.child("date_results").child(databaseDate).set(poop.val().current_highscores)
+
+			teamHighscoresRef.child("current_highscores").update({
+                        	0 : 0,
+                        	1 : 0
+                	});
 		});
 
 	};
