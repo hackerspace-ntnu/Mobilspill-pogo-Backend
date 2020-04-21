@@ -10,7 +10,6 @@ const db = admin.database();
 const teamRef = db.ref("team_comps");
 const teamHighscoresRef = db.ref("team_highscores");
 const hackpointRef = db.ref("hackpoints");
-const teamRef = db.ref("team_comps");
 
 exports.helloWorld = functions.https.onRequest((request, response) => {
 	response.send("Hello from Firebase!");
